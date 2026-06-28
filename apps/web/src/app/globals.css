@@ -6,15 +6,38 @@
   --font-mono-display: var(--font-jetbrains-mono);
   --font-mono-code: var(--font-jetbrains-mono);
   --font-sans-body: var(--font-inter);
+
+  /* Light Theme Values */
+  --canvas-color: #F8FAFC;
+  --canvas-raised-color: #FFFFFF;
+  --canvas-overlay-color: #F1F5F9;
+  --border-color: #E2E8F0;
+  --border-subtle-color: #F1F5F9;
+  --ink-color: #0F172A;
+  --ink-muted-color: #475569;
+  --ink-faint-color: #64748B;
+}
+
+/* Default to dark mode (since it's a developer network platform), but allow light mode class */
+html:not(.light) {
+  --canvas-color: #07090E;
+  --canvas-raised-color: #0D111C;
+  --canvas-overlay-color: #141A29;
+  --border-color: #1E2638;
+  --border-subtle-color: #131A29;
+  --ink-color: #F8FAFC;
+  --ink-muted-color: #94A3B8;
+  --ink-faint-color: #64748B;
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: dark light;
 }
 
 body {
-  background-color: #0b0e14;
-  color: #e4e7ec;
+  background-color: var(--canvas-color);
+  color: var(--ink-color);
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* Themed scrollbar to match the dark canvas, per design spec */

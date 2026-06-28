@@ -73,6 +73,18 @@ export default function SettingsPage() {
       setRole((userProfile.role as any) || "student");
       setIsPrivate(userProfile.is_private || false);
       setShowOnlineStatus(userProfile.show_online_status ?? true);
+      setEmailNotifs((userProfile as any).email_notifications ?? true);
+      setPushNotifs((userProfile as any).push_notifications ?? true);
+      
+      const themeVal = (userProfile as any).theme_mode || "dark";
+      setThemeMode(themeVal);
+      if (themeVal === "light") {
+        document.documentElement.classList.add("light");
+        document.documentElement.classList.remove("dark");
+      } else {
+        document.documentElement.classList.add("dark");
+        document.documentElement.classList.remove("light");
+      }
     }
   }, [userProfile, user]);
 
@@ -176,6 +188,55 @@ export default function SettingsPage() {
     }
 
     triggerSuccess("Privacy preferences updated.");
+  }
+
+  // Notifications submit handler
+  async function handleNotificationsSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!user) return;
+    setPending(true);
+    setError(null);
+
+    const supabase = createSupabaseBrowserClient();
+    const { error: notifErr } = await supabase
+      .from("profiles")
+      .update({
+        email_notifications: emailNotifs,
+        push_notifications: pushNotifs,
+      } as any)
+      .eq("id", user.id);
+
+    setPending(false);
+
+    if (notifErr) {
+      setError(notifErr.message);
+      return;
+    }
+
+    triggerSuccess("Notification preferences updated.");
+  }
+
+  // Theme change handler
+  async function handleThemeChange(mode: "dark" | "light") {
+    setThemeMode(mode);
+
+    if (mode === "light") {
+      document.documentElement.classList.add("light");
+      document.documentElement.classList.remove("dark");
+    } else {
+      document.documentElement.classList.add("dark");
+      document.documentElement.classList.remove("light");
+    }
+
+    if (user) {
+      const supabase = createSupabaseBrowserClient();
+      await supabase
+        .from("profiles")
+        .update({ theme_mode: mode } as any)
+        .eq("id", user.id);
+    }
+
+    triggerSuccess(`Theme changed to ${mode === "light" ? "Aurora Light" : "Obsidian Dark"}.`);
   }
 
   // Add niche tag helper
@@ -454,7 +515,7 @@ export default function SettingsPage() {
           {activeSection === "notifications" && (
             <div>
               <h2 className="text-sm font-bold text-ink mb-4">Notification Preferences</h2>
-              <div className="flex flex-col gap-4">
+              <form onSubmit={handleNotificationsSubmit} className="flex flex-col gap-4">
                 <div className="flex items-center justify-between border-b border-border/50 pb-3">
                   <div>
                     <label className="text-xs font-bold text-ink block">Email Notifications</label>
@@ -486,12 +547,13 @@ export default function SettingsPage() {
                 </div>
 
                 <Button
-                  onClick={() => triggerSuccess("Notification preferences saved.")}
+                  type="submit"
+                  disabled={pending}
                   className="w-fit text-xs px-4"
                 >
-                  Save Notification Toggles
+                  {pending ? "Saving..." : "Save Notification Toggles"}
                 </Button>
-              </div>
+              </form>
             </div>
           )}
 
@@ -506,7 +568,7 @@ export default function SettingsPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <button
-                    onClick={() => setThemeMode("dark")}
+                    onClick={() => handleThemeChange("dark")}
                     className={`rounded-card border p-4 flex flex-col items-center justify-center gap-2 transition-all ${
                       themeMode === "dark"
                         ? "border-accent bg-accent/10"
@@ -518,10 +580,7 @@ export default function SettingsPage() {
                   </button>
 
                   <button
-                    onClick={() => {
-                      setThemeMode("light");
-                      triggerSuccess("Light theme support is coming soon! Obsidian Dark remains active.");
-                    }}
+                    onClick={() => handleThemeChange("light")}
                     className={`rounded-card border p-4 flex flex-col items-center justify-center gap-2 transition-all ${
                       themeMode === "light"
                         ? "border-accent bg-accent/10"
@@ -529,7 +588,7 @@ export default function SettingsPage() {
                     }`}
                   >
                     <span className="text-xs font-semibold text-ink">Aurora Light</span>
-                    <span className="text-[10px] text-ink-muted">Light mode mockup</span>
+                    <span className="text-[10px] text-ink-muted">Light mode clean theme</span>
                   </button>
                 </div>
               </div>

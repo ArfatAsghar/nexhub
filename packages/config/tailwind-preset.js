@@ -18,18 +18,18 @@ module.exports = {
     extend: {
       colors: {
         canvas: {
-          DEFAULT: "#07090E",
-          raised: "#0D111C",
-          overlay: "#141A29",
+          DEFAULT: "var(--canvas-color)",
+          raised: "var(--canvas-raised-color)",
+          overlay: "var(--canvas-overlay-color)",
         },
         border: {
-          DEFAULT: "#1E2638",
-          subtle: "#131A29",
+          DEFAULT: "var(--border-color)",
+          subtle: "var(--border-subtle-color)",
         },
         ink: {
-          DEFAULT: "#F8FAFC",
-          muted: "#94A3B8",
-          faint: "#64748B",
+          DEFAULT: "var(--ink-color)",
+          muted: "var(--ink-muted-color)",
+          faint: "var(--ink-faint-color)",
         },
         role: {
           developer: "#818CF8",
