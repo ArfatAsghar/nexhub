@@ -15,6 +15,8 @@ import { useBookmarkPost } from "@/hooks/useBookmarkPost";
 import { PostDetailModal } from "@/components/PostDetailModal";
 import { EditProfileModal } from "@/components/EditProfileModal";
 import { Avatar, RoleBadge, Button, StatCard, PostCard } from "@nexhub/ui";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCog } from "@fortawesome/free-solid-svg-icons";
 import type { Database, PostType } from "@nexhub/types";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
@@ -148,9 +150,17 @@ export default function ProfilePage() {
           <Avatar name={viewedProfile.full_name} src={viewedProfile.avatar_url} size="xl" />
         </div>
         {isOwnProfile ? (
-          <Button variant="secondary" onClick={() => setEditOpen(true)}>
-            Edit Profile
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="secondary" onClick={() => setEditOpen(true)}>
+              Edit Profile
+            </Button>
+            <Link href="/settings">
+              <Button variant="secondary" className="flex items-center gap-1.5">
+                <FontAwesomeIcon icon={faCog} className="h-3.5 w-3.5" />
+                <span>Settings</span>
+              </Button>
+            </Link>
+          </div>
         ) : (
           <div className="flex gap-2">
             <Link href={`/messages?with=${viewedProfile.username}`}>
