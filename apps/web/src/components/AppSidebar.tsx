@@ -31,7 +31,6 @@ const NAV_ITEMS = [
   { href: "/sessions", label: "Sessions", icon: faCalendarAlt, badgeKey: null },
   { href: "/leaderboard", label: "Leaderboard", icon: faTrophy, badgeKey: null },
   { href: "/bookmarks", label: "Bookmarks", icon: faBookmark, badgeKey: null },
-  { href: "/settings", label: "Settings", icon: faCog, badgeKey: null },
 ];
 
 const Logo = () => (
