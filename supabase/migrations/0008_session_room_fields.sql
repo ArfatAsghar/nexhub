@@ -22,16 +22,16 @@ alter table public.session_bookings
   add constraint payment_status_valid
     check (payment_status in ('free', 'pending', 'paid'));
 
--- RLS: anyone authenticated can read sessions (already covered by existing policy)
--- Allow tutors/developers to update is_live on their own sessions
-create policy "sessions_update_own"
-  on public.sessions for update
-  to authenticated
-  using  (auth.uid() = tutor_id)
-  with check (auth.uid() = tutor_id);
+-- RLS: Drop the old insert policy and create a new one that allows both tutors and developers
+drop policy if exists "sessions_insert_own_if_tutor" on public.sessions;
 
--- Allow session owner to insert into sessions
 create policy "sessions_insert_own"
   on public.sessions for insert
   to authenticated
-  with check (auth.uid() = tutor_id);
+  with check (
+    auth.uid() = tutor_id
+    and exists (
+      select 1 from public.profiles
+      where id = auth.uid() and role in ('tutor', 'developer')
+    )
+  );
