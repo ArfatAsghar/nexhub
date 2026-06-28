@@ -1,0 +1,13 @@
+{
+  "name": "@nexhub/config",
+  "version": "0.0.1",
+  "private": true,
+  "main": "index.js",
+  "files": [
+    "eslint-base.js",
+    "eslint-next.js",
+    "tailwind-preset.js",
+    "tsconfig-base.json",
+    "tsconfig-nextjs.json"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "mobile",
+  "version": "0.0.1",
+  "private": true,
+  "description": "NexHub mobile app — placeholder workspace, scaffolding deferred to a later phase (likely Expo / React Native).",
+  "scripts": {
+    "dev": "echo \"mobile app not yet scaffolded\" && exit 0",
+    "build": "echo \"mobile app not yet scaffolded\" && exit 0",
+    "lint": "echo \"mobile app not yet scaffolded\" && exit 0",
+    "type-check": "echo \"mobile app not yet scaffolded\" && exit 0",
+    "clean": "rm -rf node_modules"
+  }
+}
