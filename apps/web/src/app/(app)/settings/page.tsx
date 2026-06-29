@@ -138,6 +138,7 @@ export default function SettingsPage() {
   // Profile submit handler
   async function handleProfileSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!user) return;
     setError(null);
 
     const ok = await updateProfile({

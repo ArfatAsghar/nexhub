@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn, Button, RoleBadge } from "@nexhub/ui";
@@ -21,6 +22,8 @@ import {
   faTrophy,
 } from "@fortawesome/free-solid-svg-icons";
 
+import { NewPostModal } from "@/components/NewPostModal";
+
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
 const NAV_ITEMS = [
@@ -34,24 +37,38 @@ const NAV_ITEMS = [
 ];
 
 const Logo = () => (
-  <div className="flex items-center gap-2 mb-6 px-2">
+  <div className="flex items-center gap-3 mb-6 px-2">
     <svg
-      className="h-7 w-7"
+      className="h-8 w-8"
       viewBox="0 0 100 100"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
-        <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <linearGradient id="logo-grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="#818CF8" />
           <stop offset="100%" stopColor="#34D399" />
         </linearGradient>
+        <linearGradient id="logo-grad-2" x1="0%" y1="100%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#34D399" />
+          <stop offset="100%" stopColor="#FB923C" />
+        </linearGradient>
       </defs>
-      <rect width="100" height="100" rx="24" fill="url(#logo-grad)" />
+      {/* Sleek outer hexagon frame */}
       <path
-        d="M32 68V32H44L56 53V32H68V68H56L44 47V68H32Z"
-        fill="#07090E"
+        d="M50 6L90 28V72L50 94L10 72V28L50 6Z"
+        stroke="url(#logo-grad-1)"
+        strokeWidth="6"
+        strokeLinejoin="round"
       />
+      {/* Nested inner translucent core */}
+      <path
+        d="M50 22L76 37V67L50 82L24 67V37L50 22Z"
+        fill="url(#logo-grad-2)"
+        fillOpacity="0.75"
+      />
+      {/* Central circular cutout */}
+      <circle cx="50" cy="52" r="12" fill="var(--canvas-raised-color)" />
     </svg>
     <span className="font-display text-lg font-bold tracking-tight text-ink">
       Nex<span className="text-accent">Hub</span>
@@ -62,6 +79,7 @@ const Logo = () => (
 export function AppSidebar({ profile }: { profile: Profile | null }) {
   const pathname = usePathname();
   const { notificationCount, messageCount } = useUnreadCounts(profile?.id ?? null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   function badgeFor(key: "messages" | "notifications" | null) {
     if (key === "messages") return messageCount;
@@ -118,12 +136,28 @@ export function AppSidebar({ profile }: { profile: Profile | null }) {
         )}
       </nav>
 
-      <Link href="/feed">
-        <Button variant="primary" className="mb-3 w-full flex items-center justify-center gap-2">
-          <FontAwesomeIcon icon={faPlus} className="h-3.5 w-3.5" />
-          <span>New Post</span>
-        </Button>
-      </Link>
+      <Button
+        onClick={() => setModalOpen(true)}
+        variant="primary"
+        className="mb-3 w-full flex items-center justify-center gap-2"
+      >
+        <FontAwesomeIcon icon={faPlus} className="h-3.5 w-3.5" />
+        <span>New Post</span>
+      </Button>
+
+      {modalOpen && (
+        <NewPostModal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          onCreated={() => {
+            if (window.location.pathname === "/feed") {
+              window.location.reload();
+            } else {
+              window.location.href = "/feed";
+            }
+          }}
+        />
+      )}
 
       {profile && (
         <div className="flex items-center justify-between rounded-card border border-border p-2">

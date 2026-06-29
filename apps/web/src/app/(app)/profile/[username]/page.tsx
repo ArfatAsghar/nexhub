@@ -14,7 +14,7 @@ import { useLikePost } from "@/hooks/useLikePost";
 import { useBookmarkPost } from "@/hooks/useBookmarkPost";
 import { PostDetailModal } from "@/components/PostDetailModal";
 import { EditProfileModal } from "@/components/EditProfileModal";
-import { Avatar, RoleBadge, Button, StatCard, PostCard } from "@nexhub/ui";
+import { Avatar, RoleBadge, Button, StatCard, PostCard, Modal } from "@nexhub/ui";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
 import type { Database, PostType } from "@nexhub/types";
@@ -93,6 +93,41 @@ export default function ProfilePage() {
   const [tab, setTab] = useState<ProfileTab>("posts");
   const [editOpen, setEditOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<FeedPost | null>(null);
+
+  // Followers & Following Modal state
+  const [statsModalType, setStatsModalType] = useState<"followers" | "following" | null>(null);
+  const [connectionsList, setConnectionsList] = useState<any[]>([]);
+  const [connectionsLoading, setConnectionsLoading] = useState(false);
+
+  const handleOpenStatsModal = async (type: "followers" | "following") => {
+    if (!viewedProfile) return;
+    setStatsModalType(type);
+    setConnectionsLoading(true);
+    setConnectionsList([]);
+
+    const supabase = createSupabaseBrowserClient();
+    
+    if (type === "followers") {
+      const { data, error } = await supabase
+        .from("follows")
+        .select("follower:profiles!follows_follower_id_fkey(*)")
+        .eq("following_id", viewedProfile.id);
+      
+      if (!error && data) {
+        setConnectionsList(data.map((d: any) => d.follower).filter(Boolean));
+      }
+    } else {
+      const { data, error } = await supabase
+        .from("follows")
+        .select("following:profiles!follows_following_id_fkey(*)")
+        .eq("follower_id", viewedProfile.id);
+      
+      if (!error && data) {
+        setConnectionsList(data.map((d: any) => d.following).filter(Boolean));
+      }
+    }
+    setConnectionsLoading(false);
+  };
 
   const postTypeFilter: PostType | undefined =
     tab === "projects" ? "project" : tab === "lessons" ? "lesson" : undefined;
@@ -201,8 +236,22 @@ export default function ProfilePage() {
 
       <div className="mt-5 flex justify-around border-y border-border py-3">
         <StatCard label="Posts" value={stats?.postCount ?? 0} />
-        <StatCard label="Followers" value={stats?.followerCount ?? 0} />
-        <StatCard label="Following" value={stats?.followingCount ?? 0} />
+        <button
+          type="button"
+          onClick={() => handleOpenStatsModal("followers")}
+          className="group flex flex-col items-center hover:opacity-80 transition-opacity"
+        >
+          <span className="font-display text-lg text-ink group-hover:text-accent transition-colors">{stats?.followerCount ?? 0}</span>
+          <span className="text-xs text-ink-faint">Followers</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => handleOpenStatsModal("following")}
+          className="group flex flex-col items-center hover:opacity-80 transition-opacity"
+        >
+          <span className="font-display text-lg text-ink group-hover:text-accent transition-colors">{stats?.followingCount ?? 0}</span>
+          <span className="text-xs text-ink-faint">Following</span>
+        </button>
         <StatCard label="Sessions Booked" value={stats?.sessionsBookedCount ?? 0} />
       </div>
 
@@ -299,6 +348,49 @@ export default function ProfilePage() {
           }
         }}
       />
+
+      {statsModalType && (
+        <Modal
+          open={!!statsModalType}
+          onClose={() => setStatsModalType(null)}
+          title={statsModalType === "followers" ? "Followers" : "Following"}
+        >
+          <div className="flex flex-col gap-3 max-h-[350px] overflow-y-auto pr-1">
+            {connectionsLoading ? (
+              <div className="flex justify-center py-6">
+                <span className="text-xs text-ink-faint">Loading connections...</span>
+              </div>
+            ) : connectionsList.length === 0 ? (
+              <p className="text-center text-xs text-ink-faint py-6">No users found.</p>
+            ) : (
+              <div className="flex flex-col gap-2">
+                {connectionsList.map((cUser) => (
+                  <div
+                    key={cUser.id}
+                    className="flex items-center justify-between gap-3 border border-border rounded-card p-2.5 bg-canvas/30"
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      <Avatar name={cUser.full_name} src={cUser.avatar_url} size="sm" />
+                      <div className="min-w-0">
+                        <p className="text-xs font-semibold text-ink truncate">{cUser.full_name}</p>
+                        <p className="text-[10px] text-ink-muted truncate">@{cUser.username}</p>
+                      </div>
+                    </div>
+                    <Link
+                      href={`/profile/${cUser.username}`}
+                      onClick={() => setStatsModalType(null)}
+                    >
+                      <Button variant="secondary" size="sm" className="text-[11px] h-7 px-3">
+                        View Profile
+                      </Button>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </Modal>
+      )}
     </main>
   );
 }

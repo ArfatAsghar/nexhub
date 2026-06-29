@@ -335,7 +335,7 @@ export function useSessionRoom({
           const raw = channel.presenceState<PresenceState>();
           const map = new Map<string, PresenceState>();
           for (const presences of Object.values(raw)) {
-            for (const p of presences as PresenceState[]) {
+            for (const p of presences as unknown as PresenceState[]) {
               if (p.userId) map.set(p.userId, p);
             }
           }
@@ -343,7 +343,7 @@ export function useSessionRoom({
         });
 
         channel.on("presence", { event: "join" }, ({ newPresences }) => {
-          for (const p of newPresences as PresenceState[]) {
+          for (const p of newPresences as unknown as PresenceState[]) {
             if (!p.userId) continue;
             setPresenceMap((prev) => new Map(prev).set(p.userId, p));
             handlePeerJoined(p.userId);
@@ -351,7 +351,7 @@ export function useSessionRoom({
         });
 
         channel.on("presence", { event: "leave" }, ({ leftPresences }) => {
-          for (const p of leftPresences as PresenceState[]) {
+          for (const p of leftPresences as unknown as PresenceState[]) {
             if (p.userId) handlePeerLeft(p.userId);
           }
         });

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, use } from "react";
 import { useRouter } from "next/navigation";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { useUser } from "@/hooks/useUser";
@@ -145,10 +145,12 @@ function ScreenShareTile({ stream }: { stream: MediaStream }) {
 export default function SessionRoomPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   const router = useRouter();
   const { user, profile, loading: userLoading } = useUser();
+  const resolvedParams = use(params);
+  const sessionId = resolvedParams.id;
 
   const [session, setSession] = useState<any | null>(null);
   const [sessionLoading, setSessionLoading] = useState(true);
@@ -162,7 +164,7 @@ export default function SessionRoomPage({
       const { data, error } = await supabase
         .from("sessions")
         .select("*, tutor:profiles!sessions_tutor_id_fkey(*)")
-        .eq("id", params.id)
+        .eq("id", sessionId)
         .single();
 
       if (error || !data) {
@@ -174,7 +176,7 @@ export default function SessionRoomPage({
       setSessionLoading(false);
     }
     load();
-  }, [params.id]);
+  }, [sessionId]);
 
   // Gate access: host always enters; participants need is_live + booking
   const isHost = !!(user && session && user.id === session.tutor_id);
@@ -209,7 +211,7 @@ export default function SessionRoomPage({
   } = useSessionRoom(
     canEnter
       ? {
-          sessionId: params.id,
+          sessionId,
           userId: user!.id,
           displayName: profile?.full_name ?? user!.email ?? "Anonymous",
           avatarUrl: profile?.avatar_url ?? null,
@@ -238,9 +240,9 @@ export default function SessionRoomPage({
     await supabase
       .from("sessions")
       .update({ is_live: true } as any)
-      .eq("id", params.id);
+      .eq("id", sessionId);
     setSession((prev: any) => ({ ...prev, is_live: true }));
-  }, [params.id]);
+  }, [sessionId]);
 
   const handleLeave = useCallback(() => {
     leaveRoom();

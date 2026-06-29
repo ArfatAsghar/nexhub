@@ -16,7 +16,8 @@ import { PostCard, Avatar } from "@nexhub/ui";
 import type { FeedPost } from "@/hooks/usePosts";
 import type { Story } from "@/hooks/useStories";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCamera, faPen, faTrash, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faCamera, faPen, faTrash, faPlus, faCalendarAlt, faClock, faVideo } from "@fortawesome/free-solid-svg-icons";
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 function timeAgo(iso: string): string {
   const diffMs  = Date.now() - new Date(iso).getTime();
@@ -356,6 +357,56 @@ export default function FeedPage() {
   const [storyUploadOpen, setStoryUploadOpen] = useState(false);
   const [viewerState, setViewerState]         = useState<{ open: boolean; index: number }>({ open: false, index: 0 });
 
+  // Follower-only upcoming sessions
+  type FollowingSession = {
+    id: string;
+    title: string;
+    scheduled_at: string;
+    host_id: string;
+    host_name: string;
+    host_username: string;
+    host_avatar: string | null;
+  };
+  const [followingSessions, setFollowingSessions] = useState<FollowingSession[]>([]);
+
+  useEffect(() => {
+    if (!profile?.id) return;
+    const supabase = createSupabaseBrowserClient();
+    (async () => {
+      // 1. Get IDs of users this profile follows
+      const { data: followData } = await supabase
+        .from("follows")
+        .select("following_id")
+        .eq("follower_id", profile.id);
+      if (!followData || followData.length === 0) return;
+      const followingIds = followData.map((f: any) => f.following_id);
+
+      // 2. Get upcoming sessions hosted by those users
+      const now = new Date().toISOString();
+      const { data: sessionData } = await supabase
+        .from("sessions")
+        .select("id, title, scheduled_at, host_id, profiles!sessions_host_id_fkey(full_name, username, avatar_url)")
+        .in("host_id", followingIds)
+        .gt("scheduled_at", now)
+        .order("scheduled_at", { ascending: true })
+        .limit(5);
+
+      if (sessionData) {
+        setFollowingSessions(
+          sessionData.map((s: any) => ({
+            id: s.id,
+            title: s.title,
+            scheduled_at: s.scheduled_at,
+            host_id: s.host_id,
+            host_name: s.profiles?.full_name ?? "Unknown",
+            host_username: s.profiles?.username ?? "",
+            host_avatar: s.profiles?.avatar_url ?? null,
+          }))
+        );
+      }
+    })();
+  }, [profile?.id]);
+
   const liveStories = useMemo(
     () => stories.filter((s) => isStoryLive(s.created_at)),
     [stories],
@@ -471,6 +522,55 @@ export default function FeedPage() {
         >
           {profile ? `What's on your mind, ${profile.full_name.split(" ")[0]}?` : "What's on your mind?"}
         </button>
+
+        {/* Follower-only upcoming sessions */}
+        {followingSessions.length > 0 && (
+          <div className="mb-6">
+            <h2 className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-ink-faint">
+              <FontAwesomeIcon icon={faVideo} className="text-accent" />
+              Upcoming Sessions from People You Follow
+            </h2>
+            <div className="flex flex-col gap-3">
+              {followingSessions.map((session) => {
+                const dateObj = new Date(session.scheduled_at);
+                const dateStr = dateObj.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
+                const timeStr = dateObj.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+                return (
+                  <div
+                    key={session.id}
+                    className="flex items-center gap-4 rounded-card border border-accent/30 bg-gradient-to-r from-accent/10 to-accent/5 px-4 py-3"
+                  >
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent/20 text-accent">
+                      <FontAwesomeIcon icon={faVideo} />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold text-ink">{session.title}</p>
+                      <p className="mt-0.5 text-[11px] text-ink-muted">
+                        by{" "}
+                        <a
+                          href={`/profile/${session.host_username}`}
+                          className="font-medium text-accent hover:underline"
+                        >
+                          @{session.host_username}
+                        </a>
+                      </p>
+                    </div>
+                    <div className="shrink-0 text-right">
+                      <p className="flex items-center gap-1 text-[11px] text-ink-faint">
+                        <FontAwesomeIcon icon={faCalendarAlt} className="text-accent/70" />
+                        {dateStr}
+                      </p>
+                      <p className="mt-0.5 flex items-center gap-1 text-[11px] text-ink-faint">
+                        <FontAwesomeIcon icon={faClock} className="text-accent/70" />
+                        {timeStr}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* New posts banner */}
         {showNewBanner && (
