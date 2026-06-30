@@ -265,44 +265,50 @@ export default function LandingPage() {
           </Link>
         </div>
 
-        {/* Mock feed card */}
-        <div className="relative mx-auto mt-20 max-w-2xl">
-          <div className="absolute -inset-1 rounded-2xl blur-md" style={{ background: "linear-gradient(90deg, #818CF850, #9333ea30, #34D39950)" }} />
+        {/* Video Demo Mockup */}
+        <div className="relative mx-auto mt-20 max-w-3xl">
+          {/* Glowing backlights */}
+          <div className="absolute -inset-1.5 rounded-2xl blur-lg" style={{ background: "linear-gradient(90deg, #818CF870, #9333ea40, #34D39970)" }} />
+          
+          {/* Laptop/Browser Frame */}
           <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#0D111C] text-left shadow-2xl">
-            <div className="flex items-center gap-2 border-b border-white/5 bg-white/[0.03] px-4 py-3">
-              <div className="h-3 w-3 rounded-full bg-red-500/60" />
-              <div className="h-3 w-3 rounded-full bg-yellow-500/60" />
-              <div className="h-3 w-3 rounded-full bg-green-500/60" />
-              <span className="ml-3 text-xs text-white/30">nexhub.app/feed</span>
+            {/* Window Chrome Header */}
+            <div className="flex items-center justify-between border-b border-white/5 bg-white/[0.03] px-4 py-3">
+              <div className="flex items-center gap-2">
+                <div className="h-3 w-3 rounded-full bg-red-500/60" />
+                <div className="h-3 w-3 rounded-full bg-yellow-500/60" />
+                <div className="h-3 w-3 rounded-full bg-green-500/60" />
+                <span className="ml-3 text-xs text-white/30 font-mono">nexhub.app/showcase.mp4</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse" />
+                <span className="text-[10px] text-white/40 font-semibold tracking-wider uppercase font-mono">Live Demo</span>
+              </div>
             </div>
-            <div className="p-5">
-              <div className="flex items-start gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white" style={{ background: "#818CF820", color: "#818CF8" }}>A</div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold text-white">Alex Chen</span>
-                    <span className="rounded-full border px-2 py-0.5 text-[10px]" style={{ borderColor: "#818CF840", background: "#818CF810", color: "#818CF8" }}>Developer</span>
-                  </div>
-                  <p className="mt-2 text-xs leading-relaxed text-white/60">
-                    Just shipped a new React hook for real-time collaboration — open source! Check it out 🚀
-                  </p>
-                  <div className="mt-3 overflow-hidden rounded-lg border border-white/5 bg-black/40">
-                    <div className="flex items-center gap-2 border-b border-white/5 px-3 py-1.5">
-                      <FontAwesomeIcon icon={faTerminal} className="text-[10px] text-white/30" />
-                      <span className="text-[10px] text-white/30">useCollaboration.ts</span>
-                    </div>
-                    <pre className="p-3 text-[11px] leading-relaxed text-green-400/80">{`export function useCollaboration(roomId: string) {
-  const [peers, setPeers] = useState<Peer[]>([]);
-  useEffect(() => {
-    socket.join(roomId);
-    return () => socket.leave(roomId);
-  }, [roomId]);
-  return { peers };
-}`}</pre>
-                  </div>
-                  <div className="mt-3 flex gap-4 text-xs text-white/30">
-                    <span>❤️ 48</span><span>💬 12</span><span>🔖 7</span>
-                  </div>
+            
+            {/* Aspect Ratio Video Container */}
+            <div className="relative aspect-video w-full bg-black/40 overflow-hidden group/video">
+              <video
+                src="https://assets.mixkit.co/videos/preview/mixkit-hands-of-a-programmer-typing-on-a-keyboard-22001-large.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover transition-transform duration-700 group-hover/video:scale-105"
+              />
+              
+              {/* Overlay Glassmorphic Info Banner */}
+              <div className="absolute bottom-4 left-4 right-4 p-4 rounded-xl border border-white/10 bg-black/60 backdrop-blur-md flex items-center justify-between transition-opacity duration-300">
+                <div className="min-w-0">
+                  <h4 className="text-xs font-bold text-white font-mono flex items-center gap-1.5">
+                    <FontAwesomeIcon icon={faRocket} className="text-[#818CF8]" />
+                    Interactive Coding Workspace
+                  </h4>
+                  <p className="text-[10px] text-white/50 truncate mt-0.5">Experience collaborative programming with built-in voice and video channels.</p>
+                </div>
+                <div className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#818CF8]/20 border border-[#818CF8]/40 text-[#818CF8] text-[10px] font-semibold font-mono">
+                  <FontAwesomeIcon icon={faGlobe} />
+                  v1.2.0
                 </div>
               </div>
             </div>
