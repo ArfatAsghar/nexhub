@@ -23,7 +23,12 @@ export default async function AppLayout({
   return (
     <div className="flex min-h-screen bg-canvas">
       <AppSidebar profile={profile} />
-      <div className="flex-1 lg:pl-[240px]">{children}</div>
+      {/* Main content area with left padding to account for fixed sidebar */}
+      <div className="flex-1 min-w-0 lg:pl-[232px]">
+        <div className="mx-auto max-w-3xl px-4 py-6 lg:px-6">
+          {children}
+        </div>
+      </div>
     </div>
   );
 }

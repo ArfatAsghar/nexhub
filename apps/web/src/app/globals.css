@@ -1,6 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ─── Obsidian Studio Design System ─────────────────────────────────────────
+   NexHub luxury dark-first theme. Surfaces use near-black obsidian values
+   with ultra-thin borders to create floating depth without heavy outlines.
+   ────────────────────────────────────────────────────────────────────────── */
 
 :root {
   --font-mono-display: var(--font-jetbrains-mono);
@@ -8,78 +15,143 @@
   --font-sans-body: var(--font-inter);
 
   /* Light Theme Values */
-  --canvas-color: #F8FAFC;
+  --canvas-color: #F1F3F9;
   --canvas-raised-color: #FFFFFF;
-  --canvas-overlay-color: #F1F5F9;
-  --border-color: #E2E8F0;
-  --border-subtle-color: #F1F5F9;
-  --ink-color: #0F172A;
-  --ink-muted-color: #475569;
+  --canvas-overlay-color: #E8EBF4;
+  --border-color: rgba(15, 23, 42, 0.08);
+  --border-subtle-color: rgba(15, 23, 42, 0.04);
+  --ink-color: #0A0E1A;
+  --ink-muted-color: #3B4563;
   --ink-faint-color: #64748B;
 }
 
-/* Default to dark mode (since it's a developer network platform), but allow light mode class */
+/* Dark mode — "Obsidian Studio" palette */
 html:not(.light) {
-  --canvas-color: #07090E;
-  --canvas-raised-color: #0D111C;
-  --canvas-overlay-color: #141A29;
-  --border-color: #1E2638;
-  --border-subtle-color: #131A29;
-  --ink-color: #F8FAFC;
-  --ink-muted-color: #94A3B8;
-  --ink-faint-color: #64748B;
+  --canvas-color: #050608;
+  --canvas-raised-color: #0A0C10;
+  --canvas-overlay-color: #0F1218;
+  --border-color: rgba(255, 255, 255, 0.07);
+  --border-subtle-color: rgba(255, 255, 255, 0.035);
+  --ink-color: #E8EBF4;
+  --ink-muted-color: #8B93A8;
+  --ink-faint-color: #4B5568;
 }
 
 html {
   color-scheme: dark light;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 body {
   background-color: var(--canvas-color);
   color: var(--ink-color);
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Themed scrollbar to match the dark canvas, per design spec */
+/* ─── Scrollbar — ultra-slim obsidian style ──────────────────────────────── */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 4px;
+  height: 4px;
 }
 ::-webkit-scrollbar-track {
-  background: #0b0e14;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1f2530;
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 999px;
-  border: 2px solid #0b0e14;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #2a3140;
+  background: rgba(255, 255, 255, 0.15);
 }
 
 * {
-  scrollbar-color: #1f2530 #0b0e14;
+  scrollbar-color: rgba(255, 255, 255, 0.08) transparent;
   scrollbar-width: thin;
 }
 
-/* Respect reduced-motion preference */
+/* ─── Global selection highlight ─────────────────────────────────────────── */
+::selection {
+  background: rgba(99, 102, 241, 0.3);
+  color: #E8EBF4;
+}
+
+/* ─── Micro-animation keyframes ──────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 1; }
+}
+
+/* ─── Utility classes ────────────────────────────────────────────────────── */
+.animate-fade-in  { animation: fadeIn  0.2s ease-out both; }
+.animate-slide-up { animation: slideUp 0.25s ease-out both; }
+.animate-scale-in { animation: scaleIn 0.2s ease-out both; }
+
+/* Premium shimmer text */
+.shimmer-text {
+  background: linear-gradient(
+    90deg,
+    #818CF8 0%,
+    #a78bfa 25%,
+    #c4b5fd 50%,
+    #818CF8 75%,
+    #6366F1 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s linear infinite;
+}
+
+/* Glass panel surface */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Premium developer grid pattern */
+.bg-grid-pattern {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+.light .bg-grid-pattern {
+  background-image: radial-gradient(rgba(15, 23, 42, 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Accent divider line */
+.accent-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.5), transparent);
+}
+
+/* ─── Reduced motion ─────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-}
-
-/* Premium developer grid pattern */
-.bg-grid-pattern {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
-  background-size: 28px 28px;
-}
-.light .bg-grid-pattern {
-  background-image: radial-gradient(rgba(15, 23, 42, 0.035) 1px, transparent 1px);
-  background-size: 28px 28px;
 }
