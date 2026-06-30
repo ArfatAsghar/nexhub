@@ -6,7 +6,7 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="relative flex min-h-screen overflow-hidden bg-[#07090E] text-white">
+    <main className="relative flex min-h-screen overflow-hidden bg-[#07090E] text-white bg-grid-pattern">
       {/* Background ambient glows */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute -left-40 -top-40 h-[600px] w-[600px] rounded-full bg-[#818CF8]/10 blur-[120px]" />

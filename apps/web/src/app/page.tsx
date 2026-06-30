@@ -185,7 +185,7 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-[#07090E] text-white">
+    <div className="relative min-h-screen overflow-x-hidden bg-[#07090E] text-white bg-grid-pattern">
 
       {/* Mesh gradient background */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
