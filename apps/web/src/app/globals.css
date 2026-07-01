@@ -4,9 +4,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── Obsidian Studio Design System ─────────────────────────────────────────
-   NexHub luxury dark-first theme. Surfaces use near-black obsidian values
-   with ultra-thin borders to create floating depth without heavy outlines.
+/* ─── Classic Minimal Design System ─────────────────────────────────────────
+   NexHub minimalist dark-first theme. Solid surfaces with clean 1px borders.
    ────────────────────────────────────────────────────────────────────────── */
 
 :root {
@@ -15,143 +14,72 @@
   --font-sans-body: var(--font-inter);
 
   /* Light Theme Values */
-  --canvas-color: #F1F3F9;
-  --canvas-raised-color: #FFFFFF;
-  --canvas-overlay-color: #E8EBF4;
-  --border-color: rgba(15, 23, 42, 0.08);
-  --border-subtle-color: rgba(15, 23, 42, 0.04);
-  --ink-color: #0A0E1A;
-  --ink-muted-color: #3B4563;
-  --ink-faint-color: #64748B;
+  --canvas-color: #FFFFFF;
+  --canvas-raised-color: #FAFAFA;
+  --canvas-overlay-color: #F4F4F5;
+  --border-color: #E4E4E7;
+  --border-subtle-color: #F4F4F5;
+  --ink-color: #09090B;
+  --ink-muted-color: #52525B;
+  --ink-faint-color: #71717A;
 }
 
-/* Dark mode — "Obsidian Studio" palette */
+/* Dark mode — "Classic Zinc" palette */
 html:not(.light) {
-  --canvas-color: #050608;
-  --canvas-raised-color: #0A0C10;
-  --canvas-overlay-color: #0F1218;
-  --border-color: rgba(255, 255, 255, 0.07);
-  --border-subtle-color: rgba(255, 255, 255, 0.035);
-  --ink-color: #E8EBF4;
-  --ink-muted-color: #8B93A8;
-  --ink-faint-color: #4B5568;
+  --canvas-color: #09090B;
+  --canvas-raised-color: #121214;
+  --canvas-overlay-color: #1A1A1E;
+  --border-color: #27272A;
+  --border-subtle-color: #1D1D21;
+  --ink-color: #FAFAFA;
+  --ink-muted-color: #A1A1AA;
+  --ink-faint-color: #71717A;
 }
 
 html {
   color-scheme: dark light;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
 }
 
 body {
   background-color: var(--canvas-color);
   color: var(--ink-color);
-  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-/* ─── Scrollbar — ultra-slim obsidian style ──────────────────────────────── */
+/* ─── Scrollbar ──────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--border-color);
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--ink-faint-color);
 }
 
 * {
-  scrollbar-color: rgba(255, 255, 255, 0.08) transparent;
+  scrollbar-color: var(--border-color) transparent;
   scrollbar-width: thin;
 }
 
 /* ─── Global selection highlight ─────────────────────────────────────────── */
 ::selection {
-  background: rgba(99, 102, 241, 0.3);
-  color: #E8EBF4;
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--ink-color);
 }
 
-/* ─── Micro-animation keyframes ──────────────────────────────────────────── */
+/* Simple animations for tabs and modals */
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.96); }
-  to   { opacity: 1; transform: scale(1); }
-}
-@keyframes shimmer {
-  0%   { background-position: -200% center; }
-  100% { background-position: 200% center; }
-}
-@keyframes glowPulse {
-  0%, 100% { opacity: 0.4; }
-  50%       { opacity: 1; }
-}
-
-/* ─── Utility classes ────────────────────────────────────────────────────── */
-.animate-fade-in  { animation: fadeIn  0.2s ease-out both; }
-.animate-slide-up { animation: slideUp 0.25s ease-out both; }
-.animate-scale-in { animation: scaleIn 0.2s ease-out both; }
-
-/* Premium shimmer text */
-.shimmer-text {
-  background: linear-gradient(
-    90deg,
-    #818CF8 0%,
-    #a78bfa 25%,
-    #c4b5fd 50%,
-    #818CF8 75%,
-    #6366F1 100%
-  );
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: shimmer 4s linear infinite;
-}
-
-/* Glass panel surface */
-.glass-panel {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-}
-
-/* Premium developer grid pattern */
-.bg-grid-pattern {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-  background-size: 32px 32px;
-}
-.light .bg-grid-pattern {
-  background-image: radial-gradient(rgba(15, 23, 42, 0.04) 1px, transparent 1px);
-  background-size: 32px 32px;
-}
-
-/* Accent divider line */
-.accent-line {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.5), transparent);
-}
-
-/* ─── Reduced motion ─────────────────────────────────────────────────────── */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+.animate-fade-in {
+  animation: fadeIn 0.15s ease-out;
 }

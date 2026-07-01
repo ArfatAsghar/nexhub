@@ -32,23 +32,23 @@ export default function LoginPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="text-center">
-        <h1 className="font-mono text-2xl font-bold tracking-tight text-white">Log in to NexHub</h1>
-        <p className="mt-1.5 text-sm text-white/50">
+        <h1 className="font-display text-2xl font-bold tracking-tight text-ink">Log in to NexHub</h1>
+        <p className="mt-1 text-sm text-ink-muted">
           Pick up where you left off.
         </p>
       </div>
 
       <form action={signInWithGoogle} className="flex flex-col gap-2">
-        <Button type="submit" variant="secondary" className="w-full flex items-center justify-center border-white/10 hover:border-white/20 bg-white/[0.04] text-white">
+        <Button type="submit" variant="secondary" className="w-full flex items-center justify-center">
           <GoogleIcon />
           Continue with Google
         </Button>
       </form>
 
-      <div className="flex items-center gap-3 text-xs text-white/30">
-        <div className="h-px flex-1 bg-white/10" />
+      <div className="flex items-center gap-3 text-xs text-ink-faint">
+        <div className="h-px flex-1 bg-border" />
         <span>or</span>
-        <div className="h-px flex-1 bg-white/10" />
+        <div className="h-px flex-1 bg-border" />
       </div>
 
       <form action={formAction} className="flex flex-col gap-4">
@@ -58,14 +58,14 @@ export default function LoginPage() {
             type="email"
             placeholder="Email Address"
             required
-            className="h-11 rounded-xl border border-white/10 bg-white/[0.02] px-4 text-sm text-white placeholder:text-white/30 focus:border-[#818CF8] focus:bg-white/[0.04] focus:outline-none focus:ring-1 focus:ring-[#818CF8]"
+            className="h-11 rounded-card border border-border bg-canvas px-4 text-sm text-ink placeholder:text-ink-faint focus:border-ink-muted focus:outline-none"
           />
           <input
             name="password"
             type="password"
             placeholder="Password"
             required
-            className="h-11 rounded-xl border border-white/10 bg-white/[0.02] px-4 text-sm text-white placeholder:text-white/30 focus:border-[#818CF8] focus:bg-white/[0.04] focus:outline-none focus:ring-1 focus:ring-[#818CF8]"
+            className="h-11 rounded-card border border-border bg-canvas px-4 text-sm text-ink placeholder:text-ink-faint focus:border-ink-muted focus:outline-none"
           />
         </div>
         {state?.error && (
@@ -73,14 +73,14 @@ export default function LoginPage() {
             {state.error}
           </p>
         )}
-        <Button type="submit" disabled={pending} className="w-full h-11 bg-[#818CF8] hover:bg-[#818CF8]/90 text-white rounded-xl font-semibold shadow-lg shadow-[#818CF8]/25 transition-all">
+        <Button type="submit" disabled={pending} className="w-full h-11 bg-ink text-canvas font-semibold">
           {pending ? "Logging in…" : "Log in"}
         </Button>
       </form>
 
-      <p className="text-center text-sm text-white/50">
+      <p className="text-center text-sm text-ink-muted">
         New to NexHub?{" "}
-        <Link href="/register" className="font-semibold text-[#818CF8] hover:underline">
+        <Link href="/register" className="font-semibold text-ink hover:underline">
           Create an account
         </Link>
       </p>

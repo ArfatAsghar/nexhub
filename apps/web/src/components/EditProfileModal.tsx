@@ -85,17 +85,17 @@ export function EditProfileModal({
           </p>
           <label className="block cursor-pointer">
             <div
-              className="h-24 w-full overflow-hidden rounded-card bg-gradient-to-r from-accent/40 to-role-tutor/40 bg-cover bg-center"
+              className="h-24 w-full overflow-hidden rounded-card bg-canvas-overlay border border-border bg-cover bg-center"
               style={coverUrl ? { backgroundImage: `url(${coverUrl})` } : undefined}
             />
             <input type="file" accept="image/*" className="hidden" onChange={handleCoverChange} />
-            <span className="mt-1 inline-block text-xs text-accent">Change cover</span>
+            <span className="mt-1 inline-block text-xs text-ink hover:underline">Change cover</span>
           </label>
         </div>
 
         <div className="flex items-center gap-3">
           <Avatar name={fullName} src={avatarUrl} size="lg" />
-          <label className="cursor-pointer text-xs text-accent">
+          <label className="cursor-pointer text-xs text-ink hover:underline">
             Change avatar
             <input type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
           </label>

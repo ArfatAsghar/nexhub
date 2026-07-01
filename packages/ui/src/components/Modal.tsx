@@ -26,47 +26,34 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-fade-in"
       onClick={onClose}
       role="presentation"
     >
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-
-      {/* Panel */}
       <div
         role="dialog"
         aria-modal="true"
         aria-label={title}
         onClick={(e) => e.stopPropagation()}
         className={cn(
-          "relative w-full max-w-lg animate-scale-in",
-          // Glass panel surface
-          "rounded-2xl border border-white/[0.08] bg-canvas-raised shadow-overlay",
-          // Top accent line
-          "overflow-hidden",
+          "w-full max-w-lg rounded-card border border-border bg-canvas-raised p-5 shadow-overlay",
           className,
         )}
       >
-        {/* Top glow accent */}
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent" />
-
-        <div className="p-6">
-          {title && (
-            <div className="mb-5 flex items-center justify-between">
-              <h2 className="font-display text-base font-semibold text-ink tracking-tight">{title}</h2>
-              <button
-                type="button"
-                onClick={onClose}
-                aria-label="Close"
-                className="flex h-7 w-7 items-center justify-center rounded-lg text-ink-faint hover:text-ink hover:bg-white/8 transition-all duration-150"
-              >
-                <X size={15} />
-              </button>
-            </div>
-          )}
-          {children}
-        </div>
+        {title && (
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="font-display text-base font-semibold text-ink">{title}</h2>
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Close"
+              className="text-ink-faint hover:text-ink transition-colors"
+            >
+              <X size={18} />
+            </button>
+          </div>
+        )}
+        {children}
       </div>
     </div>
   );

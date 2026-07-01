@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn, Avatar, RoleBadge } from "@nexhub/ui";
+import { cn, Button, RoleBadge, Avatar } from "@nexhub/ui";
 import type { Database } from "@nexhub/types";
 import { signOut } from "@/lib/supabase/auth-actions";
 import { useUnreadCounts } from "@/hooks/useUnreadCounts";
@@ -18,7 +18,6 @@ import {
   Plus,
   CalendarDays,
   Trophy,
-  Zap,
 } from "lucide-react";
 import { NewPostModal } from "@/components/NewPostModal";
 
@@ -35,36 +34,25 @@ const NAV_ITEMS = [
 ];
 
 const Logo = () => (
-  <Link href="/feed" className="flex items-center gap-3 px-3 py-2 mb-2 group">
-    <svg className="h-7 w-7 shrink-0" viewBox="0 0 32 32" fill="none">
-      <defs>
-        <linearGradient id="sidebar-logo-grad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#818CF8" />
-          <stop offset="100%" stopColor="#34D399" />
-        </linearGradient>
-      </defs>
-      <polygon
-        points="16,2 29,9.5 29,22.5 16,30 3,22.5 3,9.5"
-        fill="url(#sidebar-logo-grad)"
-        opacity="0.15"
+  <div className="flex items-center gap-2.5 mb-6 px-2">
+    <svg
+      className="h-8 w-8 text-ink"
+      viewBox="0 0 100 100"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M50 10L86 31V71L50 92L14 71V31L50 10Z"
+        stroke="currentColor"
+        strokeWidth="6"
+        strokeLinejoin="round"
       />
-      <polygon
-        points="16,2 29,9.5 29,22.5 16,30 3,22.5 3,9.5"
-        fill="none"
-        stroke="url(#sidebar-logo-grad)"
-        strokeWidth="1.5"
-      />
-      <polygon
-        points="16,8 23,12 23,20 16,24 9,20 9,12"
-        fill="url(#sidebar-logo-grad)"
-        opacity="0.3"
-      />
-      <circle cx="16" cy="16" r="3.5" fill="url(#sidebar-logo-grad)" />
+      <circle cx="50" cy="51" r="14" fill="currentColor" />
     </svg>
-    <span className="font-mono text-[15px] font-bold tracking-tight text-ink group-hover:text-accent transition-colors">
-      Nex<span className="text-accent">Hub</span>
+    <span className="font-display text-lg font-bold tracking-tight text-ink">
+      NexHub
     </span>
-  </Link>
+  </div>
 );
 
 export function AppSidebar({ profile }: { profile: Profile | null }) {
@@ -80,127 +68,86 @@ export function AppSidebar({ profile }: { profile: Profile | null }) {
 
   return (
     <>
-      <aside className="fixed inset-y-0 left-0 z-20 hidden w-[232px] flex-col border-r border-white/[0.06] bg-canvas-raised lg:flex">
-        {/* Subtle top gradient line */}
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/30 to-transparent" />
-
-        <div className="flex flex-1 flex-col gap-1 p-4 overflow-y-auto">
-          {/* Logo */}
+      <aside className="fixed inset-y-0 left-0 z-20 hidden w-[232px] flex-col border-r border-border bg-canvas-raised p-4 lg:flex">
+        <Link href="/feed">
           <Logo />
+        </Link>
 
-          {/* Divider */}
-          <div className="mx-3 mb-3 h-px bg-white/[0.06]" />
-
-          {/* Nav Items */}
-          <nav className="flex flex-col gap-0.5">
-            {NAV_ITEMS.map((item) => {
-              const active = pathname.startsWith(item.href);
-              const badge = badgeFor(item.badgeKey);
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "group flex items-center justify-between rounded-xl px-3 py-2.5 text-sm transition-all duration-150",
-                    active
-                      ? "bg-accent/12 text-accent font-semibold"
-                      : "text-ink-muted hover:bg-white/[0.05] hover:text-ink",
-                  )}
-                >
-                  <div className="flex items-center gap-3">
-                    <Icon
-                      size={17}
-                      strokeWidth={active ? 2.2 : 1.8}
-                      className={cn(
-                        "transition-colors",
-                        active ? "text-accent" : "text-ink-faint group-hover:text-ink",
-                      )}
-                    />
-                    <span>{item.label}</span>
-                  </div>
-                  {badge > 0 && (
-                    <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1.5 text-[10px] font-bold text-white shadow-accent-sm">
-                      {badge > 99 ? "99+" : badge}
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
-
-            {/* Profile link */}
-            {profile && (
+        <nav className="flex flex-1 flex-col gap-1">
+          {NAV_ITEMS.map((item) => {
+            const active = pathname.startsWith(item.href);
+            const badge = badgeFor(item.badgeKey);
+            const Icon = item.icon;
+            return (
               <Link
-                href={`/profile/${profile.username}`}
+                key={item.href}
+                href={item.href}
                 className={cn(
-                  "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-150",
-                  pathname.startsWith("/profile")
-                    ? "bg-accent/12 text-accent font-semibold"
-                    : "text-ink-muted hover:bg-white/[0.05] hover:text-ink",
+                  "flex items-center justify-between rounded-card px-3 py-2 text-sm transition-colors",
+                  active
+                    ? "bg-canvas-overlay text-ink font-semibold"
+                    : "text-ink-muted hover:bg-canvas-overlay hover:text-ink",
                 )}
               >
-                <User
-                  size={17}
-                  strokeWidth={pathname.startsWith("/profile") ? 2.2 : 1.8}
-                  className={cn(
-                    "transition-colors",
-                    pathname.startsWith("/profile") ? "text-accent" : "text-ink-faint group-hover:text-ink",
-                  )}
-                />
-                <span>Profile</span>
+                <div className="flex items-center gap-3">
+                  <Icon size={16} strokeWidth={active ? 2.2 : 1.8} className={active ? "text-ink" : "text-ink-faint"} />
+                  <span>{item.label}</span>
+                </div>
+                {badge > 0 && (
+                  <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-ink px-1.5 text-[10px] font-bold text-canvas">
+                    {badge > 99 ? "99+" : badge}
+                  </span>
+                )}
               </Link>
-            )}
-          </nav>
-        </div>
-
-        {/* Bottom section */}
-        <div className="p-4 border-t border-white/[0.06]">
-          {/* New Post button */}
-          <button
-            onClick={() => setModalOpen(true)}
-            className={cn(
-              "mb-3 w-full flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-white transition-all duration-150",
-              "bg-accent hover:bg-accent-hover active:scale-[0.98]",
-              "shadow-accent-sm hover:shadow-accent",
-              "relative overflow-hidden",
-              "before:absolute before:inset-0 before:bg-white/10 before:opacity-0 hover:before:opacity-100 before:transition-opacity",
-            )}
-          >
-            <Plus size={16} strokeWidth={2.5} />
-            <span>New Post</span>
-            <Zap size={13} className="ml-auto text-white/60" />
-          </button>
-
-          {/* Profile footer card */}
+            );
+          })}
           {profile && (
-            <div className="flex items-center gap-3 rounded-xl border border-white/[0.07] bg-white/[0.02] px-3 py-2.5 transition-all duration-150 hover:bg-white/[0.04]">
-              <Avatar
-                name={profile.full_name ?? profile.username ?? "U"}
-                src={profile.avatar_url}
-                size="sm"
-                online
-              />
-              <div className="flex-1 min-w-0">
-                <p className="truncate text-xs font-semibold text-ink leading-tight">
-                  {profile.full_name ?? profile.username}
-                </p>
-                <RoleBadge role={profile.role} className="mt-1" />
-              </div>
-              <form action={signOut}>
-                <button
-                  type="submit"
-                  className="flex h-7 w-7 items-center justify-center rounded-lg text-ink-faint hover:text-ink hover:bg-white/[0.08] transition-all duration-150"
-                  title="Sign out"
-                >
-                  <LogOut size={14} />
-                </button>
-              </form>
-            </div>
+            <Link
+              href={`/profile/${profile.username}`}
+              className={cn(
+                "flex items-center gap-3 rounded-card px-3 py-2 text-sm transition-colors",
+                pathname.startsWith("/profile")
+                  ? "bg-canvas-overlay text-ink font-semibold"
+                  : "text-ink-muted hover:bg-canvas-overlay hover:text-ink",
+              )}
+            >
+              <User size={16} strokeWidth={pathname.startsWith("/profile") ? 2.2 : 1.8} className={pathname.startsWith("/profile") ? "text-ink" : "text-ink-faint"} />
+              <span>Profile</span>
+            </Link>
           )}
-        </div>
+        </nav>
+
+        <Button
+          onClick={() => setModalOpen(true)}
+          variant="primary"
+          className="mb-3 w-full flex items-center justify-center gap-2"
+        >
+          <Plus size={16} />
+          <span>New Post</span>
+        </Button>
+
+        {profile && (
+          <div className="flex items-center justify-between rounded-card border border-border p-2 bg-canvas">
+            <div className="flex items-center gap-2 min-w-0">
+              <Avatar name={profile.full_name ?? profile.username ?? "U"} src={profile.avatar_url} size="sm" />
+              <div className="flex min-w-0 flex-col">
+                <span className="truncate text-xs font-semibold text-ink leading-tight">{profile.full_name}</span>
+                <RoleBadge role={profile.role} className="mt-0.5 w-fit" />
+              </div>
+            </div>
+            <form action={signOut} className="flex items-center">
+              <button
+                type="submit"
+                className="p-1.5 text-ink-muted hover:text-ink hover:bg-canvas-overlay rounded-sm transition-colors"
+                title="Sign out"
+              >
+                <LogOut size={14} />
+              </button>
+            </form>
+          </div>
+        )}
       </aside>
 
-      {/* New Post Modal */}
       {modalOpen && (
         <NewPostModal
           open={modalOpen}
